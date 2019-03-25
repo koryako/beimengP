@@ -1,0 +1,8 @@
+{
+    "navigationBarTitleText": "北门居委会",
+    "usingComponents": {
+        "wux-icon": "../../dist/icon/index",
+        "wux-grids": "../../dist/grids/index",
+        "wux-grid": "../../dist/grid/index"
+    }
+}

@@ -1,5 +1,6 @@
 {
   "pages":[
+    "pages/grid/grid",
     "pages/postlist/postlist",
     "pages/logs/logs",
     "pages/publish/publish",
@@ -15,6 +16,11 @@
   "tabBar--暂时不需要": {
     "selectedColor": "#00BFFF",
     "list": [
+      {
+        "pagePath": "pages/grid/grid",
+        "text": "首页"
+
+      },
       {
         "pagePath": "pages/postlist/postlist",
         "text": "发现"

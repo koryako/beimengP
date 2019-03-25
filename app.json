@@ -1,6 +1,7 @@
 {
   "pages":[
     "pages/grid/grid",
+    "pages/richtext/richtext",
     "pages/postlist/postlist",
     "pages/logs/logs",
     "pages/publish/publish",

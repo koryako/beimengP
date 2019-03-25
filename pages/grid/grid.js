@@ -13,9 +13,10 @@ Page({
     //})
   },
   onTapClick: function (e) {
-    console.log(e.currentTarget.dataset.postid)
+    var tapname=e.currentTarget.dataset.tapname;
+    console.log(tapname);
     wx.navigateTo({
-      url: '../postlist/postlist',
+      url: '../'+tapname+'/'+tapname,
     })
   },
 })

@@ -3,6 +3,7 @@ var app = getApp()
 var list = []
 Page({
   data: {
+    disabled:'disabled',
     content: '',
     height: 500,
     width: 320,

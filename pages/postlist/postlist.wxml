@@ -7,7 +7,7 @@
     <!--block不能设置css-->
     <view class='post_list' bindtap='onItemClick' data-postid='{{item._id}}'>
         <!--postId会默认转成lowercase-->
-        <open-data type="userAvatarUrl"></open-data>
+       <!-- <open-data type="userAvatarUrl"></open-data>-->
          
          <image class='avatar' src='{{item.author_avatar_url}}'/>
         <view>
@@ -25,6 +25,6 @@
     </view>
 </block>
 <!--TODO 如何使用MinUI提供的组件库-->
-<image bindtap="chooseimage" class="moment_img new_post" bindtap="newPost" src='../../images/newPost.png'></image>
+<image wx:if='{{showOrHiddenNewPost}}' bindtap="chooseimage" class="moment_img new_post" bindtap="newPost" src='../../images/newPost.png'></image>
 <!-- 需要使用 button 来授权登录 -->
 

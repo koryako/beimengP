@@ -2,7 +2,7 @@
   <image src='../image/album.png' style='width:60rpx;height:60rpx;float:left;position:fixed;right:15rpx;bottom:15rpx;' />
 </view>
 <view>
-  <textarea class='input_view' maxlength='-1' {{disabled}} auto-height='true' bindinput='inputCon' style='width:{{width-20}}px;' value='{{firstCon}}' placeholder='写点什么...' bindblur="outBlur" id='0'  />
+  <textarea class='input_view' maxlength='-1' data-disabled='{{disabled}}' auto-height='true' bindinput='inputCon' style='width:{{width-20}}px;' value='{{firstCon}}' placeholder='写点什么...' bindblur="outBlur" id='0'  />
   <view wx:for="{{dataList}}" style='background-color:white;'>
     <view class='img_view' style='width:{{width-28}}px;max-height:{{width-28}}px;'>
       

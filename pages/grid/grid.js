@@ -26,7 +26,7 @@ Page({
     wx.getStorage({
       key: 'userInfo',
       success: function (res) {
-
+           console.log(res);
       },
       fail: function () {
         that.userInfoAuthorize()

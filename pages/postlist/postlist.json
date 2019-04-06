@@ -1,4 +1,10 @@
 {
     "enablePullDownRefresh": true,
-    "backgroundTextStyle": "dark"
+    "backgroundTextStyle": "dark",
+    "navigationBarTitleText": "List",
+    "usingComponents": {
+      "wux-cell-group": "../../dist/cell-group/index",
+     
+      "wux-cell": "../../dist/cell/index"
+    }
 }

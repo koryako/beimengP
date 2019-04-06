@@ -6,6 +6,7 @@
     "pages/postlist/postlist",
     "pages/logs/logs",
     "pages/publish/publish",
+    "pages/publishedit/publishedit",
     "pages/postdetail/postdetail",
     "pages/authorize/authorize"
   ],

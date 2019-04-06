@@ -63,8 +63,18 @@ Page({
   onTapClick: function (e) {
     var tapname=e.currentTarget.dataset.tapname;
     console.log(tapname);
-    wx.navigateTo({
-      url: '../'+tapname+'/'+tapname,
-    })
+
+    if(tapname){
+      wx.navigateTo({
+        url: '../'+tapname+'/'+tapname,
+      })
+    }else {
+        wx.showModal({
+          title: '敬请期待',
+          content: '功能开发中',
+          showCancel: false
+        })
+    }
+  
   },
 })

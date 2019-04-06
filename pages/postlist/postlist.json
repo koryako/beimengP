@@ -1,7 +1,7 @@
 {
     "enablePullDownRefresh": true,
     "backgroundTextStyle": "dark",
-    "navigationBarTitleText": "List",
+    "navigationBarTitleText": "居民议事厅",
     "usingComponents": {
       "wux-cell-group": "../../dist/cell-group/index",
      

@@ -10,7 +10,7 @@ const db = cloud.database({
 // 云函数入口函数
 exports.main = async (event, context) => {
   return {
-    postlist: await db.collection('post_collection').field({
+    postlist: await db.collection('post_collection').where({del:false}).field({
       _id: true,
       author_name: true,
       content: true,

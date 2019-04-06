@@ -26,6 +26,7 @@ exports.main = async (event, context) => {
         // comment_count: 0,//评论数，直接读数据库，避免两个数据表示同一含义
         watch_count: 1,//浏览数
         // star_count: 0,//TODO：收藏人数
+        del:false//标记是否被删除
       }
     })
   } catch (e) {

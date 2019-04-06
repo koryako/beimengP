@@ -143,8 +143,8 @@ Page({
     console.log("nickname=" + e.detail.userInfo.nickName);
   },
   longTap: function(e) {
-    console.log("long tap")
-    wx.showModal({
+   // console.log("long tap")
+   /* wx.showModal({
       title: '提示',
       content: '确定要修改吗？',
       success:function(res){
@@ -160,7 +160,7 @@ Page({
 
         }
      }
-    })
+    })*/
   },
   touchStart: function(e) {
     this.touchStartTime = e.timeStamp
@@ -187,18 +187,19 @@ Page({
         console.log("double tap")
         // 成功触发双击事件时，取消单击事件的执行
         clearTimeout(that.lastTapTimeoutFunc);
-       /* wx.showModal({
+       wx.showModal({
           title: '提示',
-          content: '双击事件被触发',
+          content: '确定要删除吗？',
           success:function(res){
              if (res.confirm){
+              that.del(e.currentTarget.dataset.postid)
               console.log('用户点击确认')
              }else if(res.cancel){
                console.log('用户点击取消')
 
              }
           }
-        })*/
+        })
       } else {
         // 单击事件延时300毫秒执行，这和最初的浏览器的点击300ms延时有点像。
         that.lastTapTimeoutFunc = setTimeout(function () {
@@ -212,6 +213,29 @@ Page({
       }
     }
   },
-
+  del:function (postid){
+    var that = this
+    wx.cloud.callFunction({
+      name: 'del_post_list',
+      data: {
+        postid: postid,//删除
+       
+      },
+      success: function (res) {
+         that.refresh()
+      },
+      fail: function(res) {
+        that.publishFail('发布失败')
+      }
+    })
+  },
+  publishFail(info) {
+    wx.showToast({
+      image: '../../images/warn.png',
+      title: info,
+      mask: true,
+      duration: 2500
+    })
+  }
 
 })

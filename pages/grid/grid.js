@@ -13,19 +13,24 @@ Page({
     //})
   },
   onShow: function () {
+
     var that = this
     console.log("posts.js - onShow")
     if (this.data.update) {
       wx.startPullDownRefresh()
-      this.refresh()
+      that.refresh()
       this.setData({
         update: false
       })
     }
 
+   
+
     wx.getStorage({
       key: 'userInfo',
       success: function (res) {
+       
+   
            console.log(res);
       },
       fail: function () {
@@ -43,7 +48,7 @@ Page({
             success: res => {
               console.log(res.userInfo.nickName)
               console.log(util.formatTime(new Date()))
-
+             
               wx.setStorage({
                 key: app.globalData.userInfo,
                 data: res.userInfo,

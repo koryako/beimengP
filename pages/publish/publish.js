@@ -73,6 +73,19 @@ Page({
    * 执行发布时图片已经上传完成，写入数据库的是图片的fileId
    */
   publish: function(img_url_ok) {
+  /*  wx.showModal({
+      title: '提示',
+      content: app.globalData.wechatNickName,
+      success:function(ress){
+         if (ress.confirm){
+          
+          console.log('用户点击确认')
+         }else if(ress.cancel){
+           console.log('用户点击取消')
+
+         }
+      }
+    })*/
     var that = this
     wx.cloud.callFunction({
       name: 'publish_post',
@@ -87,13 +100,13 @@ Page({
       },
       success: function (res) {
         // 强制刷新，这个传参很粗暴
-        var pages = getCurrentPages();             //  获取页面栈
+      var pages = getCurrentPages();             //  获取页面栈
         var prevPage = pages[pages.length - 2];    // 上一个页面
         prevPage.setData({
           update: true
         })
-        wx.hideLoading()
-        wx.navigateBack({
+       wx.hideLoading()
+      wx.navigateBack({
           delta: 1
         })
       },

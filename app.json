@@ -2,8 +2,10 @@
   "pages":[
     "pages/grid/grid",
     "pages/richtext/richtext",
+    "pages/richEditor/richEditor",
     "pages/richtextDetail/richtextDetail",
     "pages/postlist/postlist",
+    "pages/boardlist/boardlist",
     "pages/logs/logs",
     "pages/publish/publish",
     "pages/publishedit/publishedit",

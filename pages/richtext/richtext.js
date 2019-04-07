@@ -3,6 +3,9 @@ var app = getApp()
 var list = []
 Page({
   data: {
+    titles:'',
+    maxContentLength: 100,
+    minContentLength: 3,
     disabled:'disabled',
     content: '',
     height: 500,
@@ -39,6 +42,15 @@ Page({
     } else {
       that.data.dataList[e.currentTarget.id - 1].value = e.detail.value;
     }
+  },
+    /**
+   * 输入标题监听
+   */
+  inputTitles: function (e) {
+    let that = this;
+   
+      that.data.titles = e.detail.value;
+   
   },
   /**
    * 失去焦点监听
@@ -133,4 +145,120 @@ Page({
       duration: 1000
     })
   },
+   //发布按钮事件
+   send: function () {
+     console.log(this.data.titles)
+     console.log( this.data.firstCon)
+     console.log(this.data.dataList)
+     if (this.data.titles.length < this.data.minContentLength) {
+      wx.showToast({
+        image: '../../images/warn.png',
+        title: '标题内容太短!',
+      })
+      return
+    }
+    var that = this;
+
+    wx.showLoading({
+      title: '发布中',
+      mask: true
+    })
+    wx.cloud.init({
+      traceUser: true
+    })
+    let dataList = that.data.dataList;
+    let img_url_ok = [];
+    //由于图片只能一张一张地上传，所以用循环
+    if (dataList.length == 0) {
+      this.publish([])
+      return
+    }
+    for (let i = 0; i < dataList.length; i++) {
+      var str = dataList[i].pic;
+      var obj = str.lastIndexOf("/");
+      var fileName = str.substr(obj + 1)
+      console.log(fileName)
+     
+      wx.cloud.uploadFile({
+        cloudPath: 'board_images/' + fileName,//必须指定文件名，否则返回的文件id不对
+        filePath: dataList[i].pic, // 小程序临时文件路径
+        success: res => {
+          // get resource ID: 
+          console.log(res)
+          //把上传成功的图片的地址放入数组中
+          img_url_ok.push({fileid:res.fileID,value:dataList[i].value})
+
+          //如果全部传完，则可以将图片路径保存到数据库
+
+          if (img_url_ok.length == dataList.length) {
+            console.log(img_url_ok)
+           that.publish(img_url_ok)
+
+          }
+
+        },
+        fail: err => {
+          // handle error
+          that.publishFail('图片上传失败')
+          console.log('fail: ' + err.errMsg)
+        }
+      })
+    }
+   },
+
+    /**
+   * 执行发布时图片已经上传完成，写入数据库的是图片的fileId
+   */
+  publish: function(img_url_ok) {
+    /*  wx.showModal({
+        title: '提示',
+        content: app.globalData.wechatNickName,
+        success:function(ress){
+           if (ress.confirm){
+            
+            console.log('用户点击确认')
+           }else if(ress.cancel){
+             console.log('用户点击取消')
+  
+           }
+        }
+      })*/
+      var that = this
+      wx.cloud.callFunction({
+        name: 'board_post',
+        data: {
+          openid: app.globalData.openId,// 这个云端其实能直接拿到
+          author_name: app.globalData.wechatNickName,
+          author_avatar_url: app.globalData.wechatAvatarUrl,
+          titles:this.data.titles,
+          firstcon:this.data.firstCon,
+          datalist: img_url_ok,
+          publish_time: "",
+          update_time: ""//目前让服务器自己生成这两个时间
+        },
+        success: function (res) {
+          // 强制刷新，这个传参很粗暴
+        var pages = getCurrentPages();             //  获取页面栈
+          var prevPage = pages[pages.length - 2];    // 上一个页面
+          prevPage.setData({
+            update: true
+          })
+         wx.hideLoading()
+        wx.navigateBack({
+            delta: 1
+          })
+        },
+        fail: function(res) {
+          that.publishFail('发布失败')
+        }
+      })
+    },
+    publishFail(info) {
+      wx.showToast({
+        image: '../../images/warn.png',
+        title: info,
+        mask: true,
+        duration: 2500
+      })
+    }
 })

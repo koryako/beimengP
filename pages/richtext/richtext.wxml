@@ -1,7 +1,7 @@
 <textarea class='text' bindinput="input" placeholder="公告标题，不少于{{minContentLength}}字" maxlength='{{maxContentLength}}' bindinput='inputTitles' value='{{titles}}' show-confirm-bar='false' auto-height/>
 
 <view class='toWrite' bindtap='addImg'>
-  <image src='../image/album.png' style='width:60rpx;height:60rpx;float:left;position:fixed;right:15rpx;bottom:15rpx;' />
+  <image src='../image/album.png' style='width:100rpx;height:100rpx;float:left;position:fixed;right:60rpx;bottom:60rpx;' />
 </view>
 <view>
   <textarea class='input_view' maxlength='-1' data-disabled='{{disabled}}' auto-height='true' bindinput='inputCon' style='width:{{width-20}}px;' value='{{firstCon}}' placeholder='正文，写点什么...' bindblur="outBlur" id='0'  />

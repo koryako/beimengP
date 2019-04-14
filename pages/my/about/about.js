@@ -1,7 +1,10 @@
 // pages/my/about/about.js
 import {$wuxSelect} from '../../../dist/index'
 import data from './data'
+const util = require('../../../utils/util.js')
+
 const isTel = (value) => !/^1[34578]\d{9}$/.test(value)
+const app = getApp()
 Page({
 
   /**
@@ -9,8 +12,15 @@ Page({
    */
   data: {
     gitUrl:"https://github.com/xc1255178487/web_learn",
+    ratervalue:0,
     visible3:false,
-    moblevalue:'',
+    value:'',
+    qqvalue:'',
+    realname:'',
+    address:'',
+    diqu:'',
+    xiaoqu:'',
+    jiedao:'',
     title2:'上海/松江老城',
     title3:'中山街道',
     options1: data,
@@ -31,7 +41,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    console.log(getApp().globalData)
   },
 
   /**
@@ -45,7 +55,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.getuser()
   },
   copy:function(e){
     let that = this;
@@ -68,6 +78,23 @@ Page({
         value: e.detail.value,
     })
 },
+onChangeRealname(e) {
+  console.log('onChange', e)
+  this.setData({
+      
+      realname: e.detail.value,
+  })
+},
+
+onChangeQqvalue(e) {
+  console.log('onChange', e)
+  this.setData({
+      
+      qqvalue: e.detail.value,
+  })
+},
+
+
 onFocus(e) {
     this.setData({
         error: isTel(e.detail.value),
@@ -202,4 +229,87 @@ onClick2() {
       },
   })
 },
+
+getuser: function () {
+  var that = this
+  console.log("奇怪")
+  console.log(app.globalData.openId)
+  wx.showLoading({
+    title: '加载中',
+  })
+  wx.cloud.init({
+    traceUser: true
+  })
+  wx.cloud.callFunction({
+    // 云函数名称
+    // 如果多次调用则存在冗余问题，应该用一个常量表示。放在哪里合适？
+    name: 'get_userinfo',
+    data: {
+      authorid: app.globalData.openId,// 这个云端其实能直接拿到
+      
+    },
+    success: function (res) {
+      //提取数据
+      var data = res.result.userinfo.data
+
+      if (data[0]){
+        if (data[0].mobile){
+          that.setData({
+            ratervalue: data[0].level||'',
+         value: data[0].mobile||'',
+            realname: data[0].realname||'',
+            qqvalue:data[0].qq||'',
+            address:data[0].address||'',
+
+            visible3:true
+        })
+        
+
+      
+        }else{
+          console.log('没有手机号码')
+        }
+      }
+      wx.hideLoading()
+     
+    },
+    fail: console.error
+  })
+},
+
+save:function(){
+  var that = this
+
+  console.log(that.data)
+  console.log(app.globalData.openId)
+  wx.showLoading({
+    title: '加载中',
+  })
+  wx.cloud.init({
+  })
+  wx.cloud.callFunction({
+    // 云函数名称
+    // 如果多次调用则存在冗余问题，应该用一个常量表示。放在哪里合适？
+    name: 'modify_userinfo',
+    data: {
+      userid: app.globalData.openId,// 这个云端其实能直接拿到
+      realname:that.data.realname,
+      mobilevalue:that.data.value,
+      level:that.data.ratervalue,
+      qqvalue:that.data.qqvalue,
+      address:that.data.address,
+      diqu:that.data.title2,
+      jiedao:that.data.title3,
+      xiaoqu:that.data.title1,
+    },
+    success: function (res) {
+      //提取数据
+     console.log('保存成功')
+      wx.hideLoading()
+    },
+    fail: console.error
+  })
+
+
+}
 })

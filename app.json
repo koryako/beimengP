@@ -4,11 +4,13 @@
     "pages/richtext/richtext",
     "pages/richtextDetail/richtextDetail",
     "pages/postlist/postlist",
+    "pages/boardlist/boardlist",
     "pages/logs/logs",
     "pages/publish/publish",
     "pages/publishedit/publishedit",
     "pages/postdetail/postdetail",
-    "pages/authorize/authorize"
+    "pages/authorize/authorize",
+    "pages/my/about/about"
   ],
   "window":{
     "backgroundTextStyle":"light",
@@ -16,22 +18,20 @@
     "navigationBarTitleText": "居委会",
     "navigationBarTextStyle":"white"
   },
-  "tabBar--暂时不需要": {
+  "tabBar": {
     "selectedColor": "#00BFFF",
     "list": [
       {
         "pagePath": "pages/grid/grid",
-        "text": "首页"
-
+        "text": "首页",
+        "iconPath":"pages/images/home.png",
+        "selectedIconPath":"pages/images/home_c.png"
       },
       {
-        "pagePath": "pages/postlist/postlist",
-        "text": "发现"
-
-      },
-      {
-        "pagePath": "pages/logs/logs",
-        "text": "我的"
+        "pagePath": "pages/my/about/about",
+        "text": "我的",
+        "iconPath":"pages/images/my.png",
+        "selectedIconPath":"pages/images/my_c.png"
       }
     ]
   },

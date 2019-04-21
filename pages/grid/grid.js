@@ -55,6 +55,8 @@ Page({
               })
               app.globalData.wechatNickName = res.userInfo.nickName
               app.globalData.wechatAvatarUrl = res.userInfo.avatarUrl
+
+              that.getuser()
             }
           })
         } else { // 跳转到授权页面 
@@ -81,5 +83,54 @@ Page({
         })
     }
   
+  },
+
+  adduser:function(){
+    var that = this
+    wx.cloud.init()
+    wx.cloud.callFunction({
+      name: 'add_user',
+      data: {
+        openid: app.globalData.openId,// 这个云端其实能直接拿到
+        author_name: app.globalData.wechatNickName,
+        author_avatar_url: app.globalData.wechatAvatarUrl,
+        publish_time: "",
+        update_time: ""//目前让服务器自己生成这两个时间
+      },
+      success: function (res) {
+         console.log('保存用户成功')
+      },
+      fail: function(res) {
+        
+      }
+    })
+  },
+  getuser: function () {
+    var that = this
+   
+    wx.cloud.init({
+      traceUser: true
+    })
+    wx.cloud.callFunction({
+      // 云函数名称
+      // 如果多次调用则存在冗余问题，应该用一个常量表示。放在哪里合适？
+      name: 'get_userinfo',
+      data: {
+        authorid: app.globalData.openId,// 这个云端其实能直接拿到
+        
+      },
+      success: function (res) {
+        //提取数据
+        var data = res.result.userinfo.data
+        console.log(data[0])
+        if (data.length==0){
+          
+          that.adduser()
+        }
+        
+        
+      },
+      fail: console.error
+    })
   },
 })

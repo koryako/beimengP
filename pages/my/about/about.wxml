@@ -23,7 +23,7 @@
          <wux-cell title="街道" extra="{{ title3 }}" bind:click="onClick2"></wux-cell>
          <wux-cell title="小区" extra="{{ title1 }}" bind:click="onClick1"></wux-cell>
           <wux-cell hover-class="none">
-                <wux-input label="详细地址" placeholder="输入详细地址" value="{{ address }}" controlled />
+                <wux-input label="详细地址" placeholder="输入详细地址" value="{{ address }}" bind:change="onChangeAddress" controlled />
             </wux-cell>
             <wux-button block type="balanced" bindtap="save" wx:if="{{ !visible3 }}">保存</wux-button>
              <wux-button block type="balanced" bindtap="modify" wx:if="{{ visible3 }}">修改</wux-button>

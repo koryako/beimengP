@@ -11,6 +11,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    
     gitUrl:"https://github.com/xc1255178487/web_learn",
     ratervalue:0,
     visible3:false,
@@ -21,8 +22,9 @@ Page({
     diqu:'',
     xiaoqu:'',
     jiedao:'',
-    title2:'上海/松江老城',
-    title3:'中山街道',
+    title1:"",
+    title2:'',
+    title3:'',
     options1: data,
         value1: [],
         options2: [
@@ -55,7 +57,48 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    var that = this
+    wx.getStorage({
+        key: 'userInfo',
+        success: function (res) {
+         
+     
+             console.log(res);
+        },
+        fail: function () {
+          that.userInfoAuthorize()
+        }
+      })
     this.getuser()
+  },
+  userInfoAuthorize: function () {
+    var that = this
+    console.log('authorize')
+    wx.getSetting({
+      success: res => {
+        if (res.authSetting['scope.userInfo']) { // 存储用户信息
+          wx.getUserInfo({
+            success: res => {
+              console.log(res.userInfo.nickName)
+              console.log(util.formatTime(new Date()))
+             
+              wx.setStorage({
+                key: app.globalData.userInfo,
+                data: res.userInfo,
+              })
+              app.globalData.wechatNickName = res.userInfo.nickName
+              app.globalData.wechatAvatarUrl = res.userInfo.avatarUrl
+
+              that.getuser()
+            }
+          })
+        } else { // 跳转到授权页面 
+          wx.navigateTo({
+            url: '/pages/authorize/authorize',
+          })
+        }
+      }
+    })
   },
   copy:function(e){
     let that = this;
@@ -85,7 +128,13 @@ onChangeRealname(e) {
       realname: e.detail.value,
   })
 },
-
+onChangeAddress(e){
+    console.log('onChange', e)
+  this.setData({
+      
+      address: e.detail.value,
+  })
+},
 onChangeQqvalue(e) {
   console.log('onChange', e)
   this.setData({
@@ -118,8 +167,9 @@ onClear(e) {
     })
 },
 onError() {
+    console.log(1)
     wx.showModal({
-        title: 'Please enter 11 digits',
+        title: '请输入11位数字',
         showCancel: !1,
     })
 },
@@ -233,7 +283,7 @@ onClick2() {
 getuser: function () {
   var that = this
   console.log("奇怪")
-  console.log(app.globalData.openId)
+ 
   wx.showLoading({
     title: '加载中',
   })
@@ -253,20 +303,30 @@ getuser: function () {
       var data = res.result.userinfo.data
 
       if (data[0]){
-        if (data[0].mobile){
-          that.setData({
+        that.setData({
             ratervalue: data[0].level||'',
          value: data[0].mobile||'',
             realname: data[0].realname||'',
             qqvalue:data[0].qq||'',
             address:data[0].address||'',
-
+            title1:data[0].xiaoqu||'',//小区
+            title2:data[0].diqu||'',//地区
+            title3:data[0].jiedao||'',//街道
+           
+        })
+        if (data[0].mobile){
+          that.setData({
+          
             visible3:true
         })
         
 
       
         }else{
+            that.setData({
+                visible3:false
+            })
+            
           console.log('没有手机号码')
         }
       }
@@ -278,10 +338,33 @@ getuser: function () {
 },
 
 save:function(){
-  var that = this
+    if (this.data.error){
+        wx.showModal({
+            title: '对不起',
+            content: '手机号码不足11位',
+            showCancel: false
+          })
+    }else{
+        this.savelevel()
+    }
+    
+},
+modify:function(){
+    if (this.data.error){
+        wx.showModal({
+            title: '对不起',
+            content: '手机号码不足11位',
+            showCancel: false
+          })
+    }else{
+     this.updata()
+    }
+},
+savelevel:function(){
+    var that = this
 
   console.log(that.data)
-  console.log(app.globalData.openId)
+ // console.log(app.globalData.openId)
   wx.showLoading({
     title: '加载中',
   })
@@ -295,7 +378,7 @@ save:function(){
       userid: app.globalData.openId,// 这个云端其实能直接拿到
       realname:that.data.realname,
       mobilevalue:that.data.value,
-      level:that.data.ratervalue,
+      level:1,
       qqvalue:that.data.qqvalue,
       address:that.data.address,
       diqu:that.data.title2,
@@ -305,7 +388,61 @@ save:function(){
     success: function (res) {
       //提取数据
      console.log('保存成功')
+      // 强制刷新，这个传参很粗暴
+     // var pages = getCurrentPages();             //  获取页面栈
+       // var prevPage = pages[pages.length - 2];    // 上一个页面
+      //  prevPage.setData({
+        //  update: true
+     //   })
+       wx.hideLoading()
+       wx.switchTab({
+        url:'../../grid/grid'
+        });
+      
+    },
+    fail: console.error
+  })
+},
+
+updata:function(){
+  var that = this
+
+  console.log(that.data)
+ // console.log(app.globalData.openId)
+  wx.showLoading({
+    title: '加载中',
+  })
+  wx.cloud.init({
+  })
+  wx.cloud.callFunction({
+    // 云函数名称
+    // 如果多次调用则存在冗余问题，应该用一个常量表示。放在哪里合适？
+    name: 'modify_userinfo',
+    data: {
+      userid: app.globalData.openId,// 这个云端其实能直接拿到
+      realname:that.data.realname,
+     // mobilevalue:that.data.value,
+     // level:that.data.ratervalue,
+      qqvalue:that.data.qqvalue,
+      address:that.data.address,
+      diqu:that.data.title2,
+      jiedao:that.data.title3,
+      xiaoqu:that.data.title1,
+    },
+    success: function (res) {
+      //提取数据
+     console.log('保存成功')
+      
+       // 强制刷新，这个传参很粗暴
+     //  var pages = getCurrentPages();             //  获取页面栈
+      // var prevPage = pages[pages.length - 2];    // 上一个页面
+      // prevPage.setData({
+      //   update: true
+     //  })
       wx.hideLoading()
+      wx.switchTab({
+        url:'../../grid/grid'
+        });
     },
     fail: console.error
   })

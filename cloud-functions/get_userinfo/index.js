@@ -8,7 +8,7 @@ const db = cloud.database({
 // 云函数入口函数
 exports.main = async (event, context) => {
   return {
-    userinfo: await db.collection('user').where({ author_id: event.authorid }).field({
+    userinfo: await db.collection('user').where({ author_id: event.userInfo.openId }).field({
       _id: true,
       author_name: true,
       realname: true,

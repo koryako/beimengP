@@ -8,6 +8,8 @@ Page({
    * 页面的初始数据
    */
   data: {
+    ratervalue: '',
+    mobilevalue: '',
     showOrHiddenNewPost:true,
     postlist: null,
     update: false,// 用于发布动态后的强制刷新标记
@@ -62,7 +64,7 @@ Page({
   onLoad: function (options) {
     // 这个工具资瓷日子过滤吗？
     console.log("posts.js - onLoad")
-    
+    this.getuser()
     wx.startPullDownRefresh()
     this.refresh()
   },
@@ -128,9 +130,22 @@ Page({
    * 带参跳转
    */
   newPost: function(e) {
-    wx.navigateTo({
-      url: '../publish/publish'
-    })
+     console.log(this.data.mobilevalue)
+     console.log(this.data.ratervalue)
+     
+    if (this.data.mobilevalue && this.data.ratervalue>=1){
+      wx.navigateTo({
+        url: '../publish/publish'
+      })
+
+    }else{
+      wx.showModal({
+        title: '完善您的个人资料',
+        content: '请到 我的 页面更新资料',
+        showCancel: false
+      })
+    }
+    
   },
   onItemClick: function (e) {
     console.log(e.currentTarget.dataset.postid)
@@ -162,6 +177,35 @@ Page({
      }
     })*/
   },
+  getuser: function () {
+    var that = this
+    wx.showLoading({
+      title: '加载中',
+    })
+    wx.cloud.init({
+      traceUser: true
+    })
+    wx.cloud.callFunction({
+      // 云函数名称
+      // 如果多次调用则存在冗余问题，应该用一个常量表示。放在哪里合适？
+      name: 'get_userinfo',
+      data: {
+        authorid: app.globalData.openId,// 这个云端其实能直接拿到
+      },
+      success: function (res) {
+        //提取数据
+        var data = res.result.userinfo.data
+        if (data[0]){
+          that.setData({
+              ratervalue: data[0].level||'',
+           mobilevalue: data[0].mobile||'',
+          })
+        }
+        wx.hideLoading()
+      },
+      fail: console.error
+    })
+  },
   touchStart: function(e) {
     this.touchStartTime = e.timeStamp
   },
@@ -187,19 +231,29 @@ Page({
         console.log("double tap")
         // 成功触发双击事件时，取消单击事件的执行
         clearTimeout(that.lastTapTimeoutFunc);
-       wx.showModal({
-          title: '提示',
-          content: '确定要删除吗？',
-          success:function(res){
-             if (res.confirm){
-              that.del(e.currentTarget.dataset.postid)
-              console.log('用户点击确认')
-             }else if(res.cancel){
-               console.log('用户点击取消')
 
-             }
-          }
-        })
+        if (this.data.mobilevalue && this.data.ratervalue>=5){
+          wx.showModal({
+            title: '提示',
+            content: '确定要删除吗？',
+            success:function(res){
+               if (res.confirm){
+                that.del(e.currentTarget.dataset.postid)
+                console.log('用户点击确认')
+               }else if(res.cancel){
+                 console.log('用户点击取消')
+  
+               }
+            }
+          })
+
+
+
+        }
+
+      
+
+
       } else {
         // 单击事件延时300毫秒执行，这和最初的浏览器的点击300ms延时有点像。
         that.lastTapTimeoutFunc = setTimeout(function () {
@@ -225,7 +279,7 @@ Page({
          that.refresh()
       },
       fail: function(res) {
-        that.publishFail('发布失败')
+        that.publishFail('删除失败')
       }
     })
   },

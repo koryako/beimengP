@@ -14,26 +14,18 @@ const db = cloud.database({
 // 云函数入口函数
 exports.main = async (event, context) => {
   try {
-   // const timestamp = Date.now()
-    await db.collection('user').where({
-      author_id: event.userInfo.openId,
+    // const timestamp = Date.now()
+    await db.collection('board_collection').where({
+      _id: event.postid
     })
-    .update({
-      data: {
-        realname: event.realname,
-        mobile: event.mobilevalue,
-        level: event.level,
-        qq: event.qqvalue,
-        address: event.address,
-        diqu: event.diqu,
-        jiedao: event.jiedao,
-        xiaoqu: event.xiaoqu,
-        update_time: Date.now()
-      }
-    })
+      .update({
+        data: {
+          del: true
+        }
+      })
 
 
-  
+
   } catch (e) {
     console.error(e)
   }

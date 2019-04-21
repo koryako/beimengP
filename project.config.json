@@ -17,8 +17,9 @@
 	"debugOptions": {
 		"hidedInDevtools": []
 	},
+  "cloudfunctionRoot": "cloud-functions/",
 	"isGameTourist": false,
-	"cloudfunctionRoot": "cloud-functions/",
+
 	"condition": {
 		"search": {
 			"current": -1,
